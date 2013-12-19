@@ -1,0 +1,42 @@
+{
+  "name": "axiom-client",
+  "description": "Standard client services for Torchlight projects.",
+  "version": "0.0.1",
+  "homepage": "",
+  "repository": "",
+  "author": "Torchlight Software <info@torchlightsoftware.com> (http://torchlightsoftware.com)",
+  "main": "./index.js",
+  "private": true,
+  "dependencies": {
+    "law": "*",
+    "law-connect": "*",
+    "torch": "*",
+    "coffee-script": "*",
+    "gulp": "*",
+    "gulp-coffee": "*",
+    "gulp-jade": "*",
+    "gulp-wrap-amd": "*",
+    "gulp-rimraf": "*",
+    "axiom": "*",
+    "axiom-base": "*"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "request": "*",
+    "should": "*",
+    "lodash": "*",
+    "mockery": "*"
+  },
+  "engines":{
+    "node": ">= 0.8.4"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": ""
+    }
+  ],
+  "scripts": {
+    "test": "mocha"
+  }
+}
