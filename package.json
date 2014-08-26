@@ -1,7 +1,7 @@
 {
-  "name": "axiom-client",
-  "description": "Standard client services for Torchlight projects.",
-  "version": "0.0.1",
+  "name": "axiom-gulp",
+  "description": "Standard gulp pipeline for Axiom.",
+  "version": "0.0.2",
   "homepage": "",
   "repository": "",
   "author": "Torchlight Software <info@torchlightsoftware.com> (http://torchlightsoftware.com)",
@@ -15,18 +15,18 @@
     "gulp-coffee": "*",
     "gulp-jade": "*",
     "gulp-wrap-amd": "*",
-    "gulp-rimraf": "*",
     "axiom": "*",
-    "axiom-base": "*"
+    "axiom-protocol": "*",
+    "lodash": "^2.4.1",
+    "rimraf": "^2.2.8"
   },
   "devDependencies": {
     "mocha": "*",
     "request": "*",
     "should": "*",
-    "lodash": "*",
     "mockery": "*"
   },
-  "engines":{
+  "engines": {
     "node": ">= 0.8.4"
   },
   "licenses": [

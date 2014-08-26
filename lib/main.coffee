@@ -5,18 +5,23 @@ rel = (args...) -> join __dirname, args...
 
 module.exports =
   config:
-    build:
-      # In object pairs with keys ['src', 'dest']
-      components: [
+
+    #copyToClient: ['key1', 'key2']
+
+    pipeline:
+
+      # file extension
+      coffee: [
+
+        # gulp modules
+        'coffee'
       ]
 
-      # Project root directory
-      root: null
+      jade: [
+        'jade'
+      ]
 
-      public: null
-
-      coffee:
-        src: null
-        dest: null
+  extends:
+    build: ['client.build/load']
 
   services: law.load rel('services')
