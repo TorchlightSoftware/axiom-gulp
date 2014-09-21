@@ -1,4 +1,5 @@
 node_modules
 npm-debug.log
 domain/gulp/public
+sample/domain/gulp/public
 .DS_Store

@@ -6,8 +6,7 @@ rel = (args...) -> join __dirname, args...
 module.exports =
   config:
 
-    #copyToClient: ['key1', 'key2']
-
+    # NOTE: not actually implemented just an idea
     pipeline:
 
       # file extension
@@ -20,6 +19,8 @@ module.exports =
       jade: [
         'jade'
       ]
+
+    custom: []
 
   extends:
     build: ['client.build/load']

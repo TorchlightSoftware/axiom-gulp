@@ -1,13 +1,16 @@
 logger = require 'torch'
-fs = require 'fs'
+fs = require 'fs-extra'
+rimraf = require 'rimraf'
+_ = require 'lodash'
+{focus} = require 'qi'
+async = require 'async'
+{join} = require 'path'
+
 gulp = require 'gulp'
 amd = require 'gulp-wrap-amd'
 coffee = require 'gulp-coffee'
 jade = require 'gulp-jade'
-rimraf = require 'rimraf'
-_ = require 'lodash'
-
-{join} = require 'path'
+rename = require 'gulp-rename'
 
 #oldEmit = gulp.emit
 #gulp.emit = (args...) ->
@@ -31,32 +34,59 @@ module.exports =
     gulp.task 'default', [
       'mkpublic'
       'compile'
+      'static-files'
+      'custom'
+      'client-config'
     ]
 
     gulp.task 'mkpublic', ['clean'], (next) ->
       fs.mkdir publicDir, next
 
-    gulp.task 'compile', ['coffee', 'templates']
+    gulp.task 'compile', ['clean', 'coffee', 'templates']
 
     #gulp.task 'client-config', ['public'], (fin) ->
       #clientConfig = buildClientConfig()
       #fs.writeFileSync join(publicDir, 'js/config.js'), clientConfig
       #fin()
 
-    #gulp.task 'static-files', ['components'], (fin) ->
-      #gulp.src(join clientDir, '*.html')
-          #.pipe(gulp.dest(publicDir))
+    gulp.task 'client-config', ['clean'], (fin) =>
 
-      #gulp.src(join clientDir, 'js/vendor/**')
-          #.pipe(gulp.dest(join publicDir, 'js/vendor'))
+      if @config.clientConfig?
+        out = "define(#{JSON.stringify(@config.clientConfig)});"
+        fs.mkdirp @rel('public/js'), (err) =>
+          return fin(err) if err?
+          fs.writeFile @rel('public/js/config.js'), out, fin
 
-      #gulp.src(join clientDir, 'css/**')
-          #.pipe(gulp.dest(join publicDir, 'css'))
+      else
+        fin()
 
-      #gulp.src(join clientDir, 'img/**')
-          #.pipe(gulp.dest(join publicDir, 'img'))
+    gulp.task 'custom', ['clean'], (fin) =>
+      runBuild = (spec, next) ->
+        {src, dest} = spec
 
-      #fin()
+        task = gulp.src(src)
+        if dest?
+          task = task.pipe(rename(dest))
+        task.pipe(gulp.dest(publicDir)).on 'end', next
+
+      async.forEach @config.custom, runBuild, fin
+
+    gulp.task 'static-files', ['clean'], (fin) ->
+      step = focus(fin)
+
+      gulp.src(join(clientDir, '**/*.html'))
+        .pipe(gulp.dest(publicDir)).on 'end', step()
+
+      gulp.src(join(clientDir, '**/*.js'))
+        .pipe(gulp.dest(publicDir)).on 'end', step()
+
+      gulp.src(join(clientDir, '**/*.css'))
+        .pipe(gulp.dest(publicDir)).on 'end', step()
+
+      gulp.src(join clientDir, 'media/**')
+          .pipe(gulp.dest(join publicDir, 'media')).on 'end', step()
+
+      return null
 
     ## gulp.task 'template-runtime', ['public'], (fin) ->
     ##   src = join nodeModules, 'jade/runtime.js'

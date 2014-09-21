@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "axiom": "*",
-    "axiom-protocol": "*"
+    "axiom-protocol": "*",
+    "gulp-rename": "^1.2.0"
   }
 }
