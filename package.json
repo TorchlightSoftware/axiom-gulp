@@ -2,14 +2,12 @@
   "name": "axiom-gulp",
   "description": "Standard gulp pipeline for Axiom.",
   "version": "0.0.5",
-  "homepage": "",
-  "repository": "",
+  "homepage": "https://github.com/torchlightsoftware/axiom-gulp",
+  "repository": "https://github.com/torchlightsoftware/axiom-gulp",
   "author": "Torchlight Software <info@torchlightsoftware.com> (http://torchlightsoftware.com)",
   "main": "./index.js",
   "dependencies": {
     "async": "^0.9.0",
-    "axiom": "*",
-    "axiom-protocol": "*",
     "coffee-script": "*",
     "fs-extra": "^0.11.1",
     "gulp": "*",
@@ -26,6 +24,8 @@
   },
   "devDependencies": {
     "mocha": "*",
+    "axiom": "*",
+    "axiom-protocol": "*",
     "request": "*",
     "should": "*",
     "mockery": "*"

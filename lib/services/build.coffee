@@ -4,7 +4,7 @@ rimraf = require 'rimraf'
 _ = require 'lodash'
 {focus} = require 'qi'
 async = require 'async'
-{join} = require 'path'
+{join, dirname} = require 'path'
 
 gulp = require 'gulp'
 amd = require 'gulp-wrap-amd'
@@ -20,11 +20,6 @@ rename = require 'gulp-rename'
 module.exports =
   service: (args, done) ->
 
-    #buildClientConfig = =>
-      #copyToClient = @config.copyToClient or ['port', 'url', 'api']
-      #clientConfig = JSON.stringify _.pick @config, copyToClient
-      #return "define(#{clientConfig});"
-
     clientDir = @rel 'client'
     publicDir = @rel 'public'
 
@@ -32,7 +27,6 @@ module.exports =
       rimraf publicDir, next
 
     gulp.task 'default', [
-      'mkpublic'
       'compile'
       'static-files'
       'custom'
@@ -42,25 +36,27 @@ module.exports =
     gulp.task 'mkpublic', ['clean'], (next) ->
       fs.mkdir publicDir, next
 
-    gulp.task 'compile', ['clean', 'coffee', 'templates']
+    gulp.task 'compile', ['mkpublic', 'coffee', 'templates']
 
-    #gulp.task 'client-config', ['public'], (fin) ->
-      #clientConfig = buildClientConfig()
-      #fs.writeFileSync join(publicDir, 'js/config.js'), clientConfig
-      #fin()
-
-    gulp.task 'client-config', ['clean'], (fin) =>
+    gulp.task 'client-config', ['mkpublic'], (fin) =>
 
       if @config.clientConfig?
-        out = "define(#{JSON.stringify(@config.clientConfig)});"
-        fs.mkdirp @rel('public/js'), (err) =>
+        {values, filename} = @config.clientConfig
+        values or= {}
+        filename or= 'js/config.js'
+
+        fullpath = join 'public', filename
+        dir = dirname(fullpath)
+
+        out = "define(#{JSON.stringify(values)});"
+        fs.mkdirp @rel(dir), (err) =>
           return fin(err) if err?
-          fs.writeFile @rel('public/js/config.js'), out, fin
+          fs.writeFile @rel(fullpath), out, fin
 
       else
         fin()
 
-    gulp.task 'custom', ['clean'], (fin) =>
+    gulp.task 'custom', ['mkpublic'], (fin) =>
       runBuild = (spec, next) ->
         {src, dest} = spec
 
@@ -71,7 +67,7 @@ module.exports =
 
       async.forEach @config.custom, runBuild, fin
 
-    gulp.task 'static-files', ['clean'], (fin) ->
+    gulp.task 'static-files', ['mkpublic'], (fin) ->
       step = focus(fin)
 
       gulp.src(join(clientDir, '**/*.html'))
